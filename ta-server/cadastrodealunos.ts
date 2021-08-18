@@ -1,8 +1,12 @@
 import { Aluno } from '../common/aluno';
-
+import * as express from "express";
+import * as bodyParser from "body-parser";
+import Mail from "./services/mail";
 export class CadastroDeAlunos {
    alunos: Aluno[] = [];
 
+   
+  
     cadastrar(aluno: Aluno): Aluno {
      var result = null;
      if (this.cpfNaoCadastrado(aluno.cpf)) {

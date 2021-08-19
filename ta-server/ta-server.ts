@@ -53,10 +53,14 @@ taserver.route("/sendemail").get((req, res) => {
 
 taserver.post('/sendemail', function(req, res){
   let message = req.body;
-  console.log(message);
+  
   Mail.to = message.email;
-  Mail.subject = "Atualização de notas";
-  Mail.message = "versão 2.0";
+  Mail.subject = "Atualização de Notas";
+
+  Mail.message = "<p>Prezado, " + message.nome + " suas notas foram atualizadas! Confira a seguir.</p><p>Requisitos: " 
+  + JSON.stringify(message.metas.gerDeConfiguracao) + 
+  "</p><p>Gerencia de Configuração: " + JSON.stringify(message.metas.requisitos) + "</p>";
+
   let result = Mail.sendMail();
   console.log(result)
   res.status(200).json({ 'result': result })
@@ -64,7 +68,7 @@ taserver.post('/sendemail', function(req, res){
 
 
 var server = taserver.listen(port, function () {
-  console.log('Example app listening on port 3030!')
+  console.log('Example app listening on port 3000!')
 })
 
 function closeServer(): void {

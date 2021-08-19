@@ -5,7 +5,7 @@ import {Aluno} from '../common/aluno';
 import {CadastroDeAlunos} from './cadastrodealunos';
 
 var taserver = express();
-const port = process.env.PORT || 3030;
+const port = process.env.PORT || 3000;
 taserver.use(express.json());
 
 taserver.use(express.urlencoded({ extended: true }));
@@ -53,10 +53,10 @@ taserver.route("/sendemail").get((req, res) => {
 
 taserver.post('/sendemail', function(req, res){
   let message = req.body;
-     
-  Mail.to = message.to;
-  Mail.subject = message.subject;
-  Mail.message = message.message;
+  console.log(message);
+  Mail.to = message.email;
+  Mail.subject = "Atualização de notas";
+  Mail.message = "versão 2.0";
   let result = Mail.sendMail();
   console.log(result)
   res.status(200).json({ 'result': result })

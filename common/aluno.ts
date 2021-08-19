@@ -3,6 +3,7 @@ export class Aluno {
   cpf: string;
   email: string;
   metas: Map<string,string>;
+  lastEmail: Date;
 
   constructor() {
     this.clean();
@@ -12,6 +13,8 @@ export class Aluno {
     this.nome = "";
     this.cpf = "";
     this.email = "";
+    this.lastEmail = new Date();
+    this.lastEmail.setTime(this.lastEmail.getTime() - 86400);
     this.metas = new Map<string,string>();
   }
 

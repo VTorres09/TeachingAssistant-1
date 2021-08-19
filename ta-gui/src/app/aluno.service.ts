@@ -28,6 +28,13 @@ export class AlunoService {
               ); 
   }
 
+  sendEmail(aluno: Aluno): Observable<Aluno> {
+    return this.http.post<any>(this.taURL + "/sendemail", JSON.stringify(aluno), {headers: this.headers})     .pipe(
+      retry(2),
+      map(res => {if (res.success) {return aluno;} else {return null;}})
+    )
+  }
+
   getAlunos(): Observable<Aluno[]> {
     return this.http.get<Aluno[]>(this.taURL + "/alunos")
               .pipe(

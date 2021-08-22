@@ -82,9 +82,10 @@ defineSupportCode(function ({ Given, When, Then }) {
     });
 
     Then(/^the system now stores "([^\"]*)" with CPF "(\d*)"$/, async (name, cpf) => {
-        let resposta = `{"nome":"${name}","cpf":"${cpf}","email":"","metas":{}`;
+        
+        let resposta = `{"nome":"${name}","cpf":"${cpf}","email":"","lastEmail":"2000-11-09T03:00:00.000Z","notificacaoEmail":true,"metas":{}}`;
         await request.get(base_url + "alunos")
-                     .then(body => expect(body.includes(resposta)).to.equal(true));
+                     .then(body => {expect(body.includes(resposta)).to.equal(true)});
     });
 
 })

@@ -13,7 +13,7 @@
     <td>{{a.email}}</td>
     <td class="meta"><input type="number" [(ngModel)]="a.metas['requisitos']" (change)="atualizarAluno(a)"></td>
     <td class="meta"><input type="number" [(ngModel)]="a.metas['gerDeConfiguracao']" (change)="atualizarAluno(a)"></td>
-    <td><input type="checkbox" checked></td>
+    <td><input type="checkbox" [(ngModel)]="a.notificacaoEmail" checked (change)="atualizarAluno(a)"></td>
  </tr>
  </table>
  <button (click)="updateGrades()">

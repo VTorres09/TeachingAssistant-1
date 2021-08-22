@@ -45,7 +45,7 @@ const dayInMilliseconds: number = 86400000;
         var currentDate: Date = new Date();
         aluno.lastEmail = new Date(aluno.lastEmail);
         // No máximo 1 dia check
-        if((currentDate.getTime() - aluno.lastEmail.getTime()) > dayInMilliseconds){
+        if((currentDate.getTime() - aluno.lastEmail.getTime()) > dayInMilliseconds && aluno.notificacaoEmail){
           this.alunoService.sendEmail({aluno, medias }).subscribe();
           aluno.lastEmail = new Date();
           this.alunoService.atualizar(aluno).subscribe(

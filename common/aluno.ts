@@ -6,6 +6,7 @@ export class Aluno {
   email: string;
   metas: Map<string,string>;
   lastEmail: Date;
+  notificacaoEmail: Boolean;
 
   constructor() {
     this.clean();
@@ -16,6 +17,7 @@ export class Aluno {
     this.cpf = "";
     this.email = "";
     this.lastEmail = new Date();
+    this.notificacaoEmail = true;
     this.lastEmail.setTime(this.lastEmail.getTime() - dayInMilliseconds);
     this.metas = new Map<string,string>();
   }

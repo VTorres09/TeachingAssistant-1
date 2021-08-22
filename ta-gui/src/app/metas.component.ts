@@ -4,6 +4,7 @@ import { NgModule } from '@angular/core';
 import { Aluno } from '../../../common/aluno';
 import { AlunoService } from './aluno.service';
 
+const dayInMilliseconds: number = 86400000;
 
   @Component({
    selector: 'metas',
@@ -44,7 +45,7 @@ import { AlunoService } from './aluno.service';
         var currentDate: Date = new Date();
         aluno.lastEmail = new Date(aluno.lastEmail);
         // No máximo 1 dia check
-        if((currentDate.getTime() - aluno.lastEmail.getTime()) > 86400){
+        if((currentDate.getTime() - aluno.lastEmail.getTime()) > dayInMilliseconds){
           this.alunoService.sendEmail({aluno, medias }).subscribe();
           aluno.lastEmail = new Date();
           this.alunoService.atualizar(aluno).subscribe(

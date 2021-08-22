@@ -5,12 +5,17 @@
     <th>e-mail</th>
     <th>Requisitos</th>
     <th>Gerência de Configuração</th>
+    <th>Notificações de email</th>
  </tr>
  <tr *ngFor="let a of alunos">
     <td>{{a.nome}}</td>
     <td>{{a.cpf}}</td>
     <td>{{a.email}}</td>
-    <td class="meta"><input [(ngModel)]="a.metas['requisitos']" (change)="atualizarAluno(a)"></td>
-    <td class="meta"><input [(ngModel)]="a.metas['gerDeConfiguracao']" (change)="atualizarAluno(a)"></td>
+    <td class="meta"><input type="number" [(ngModel)]="a.metas['requisitos']" (change)="atualizarAluno(a)"></td>
+    <td class="meta"><input type="number" [(ngModel)]="a.metas['gerDeConfiguracao']" (change)="atualizarAluno(a)"></td>
+    <td><input type="checkbox" [(ngModel)]="a.notificacaoEmail" checked (change)="atualizarAluno(a)"></td>
  </tr>
  </table>
+ <button (click)="updateGrades()">
+    Atualizar notas
+ </button>

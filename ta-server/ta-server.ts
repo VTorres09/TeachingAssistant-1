@@ -5,7 +5,7 @@ import {Aluno} from '../common/aluno';
 import {CadastroDeAlunos} from './cadastrodealunos';
 
 var taserver = express();
-const port = process.env.PORT || 3030;
+const port = process.env.PORT || 3000;
 taserver.use(express.json());
 
 taserver.use(express.urlencoded({ extended: true }));
@@ -52,11 +52,12 @@ taserver.route("/sendemail").get((req, res) => {
 });
 
 taserver.post('/sendemail', function(req, res){
-  let message = req.body;
-     
-  Mail.to = message.to;
-  Mail.subject = message.subject;
-  Mail.message = message.message;
+  let {aluno, medias} = req.body;
+  console.log(aluno)
+  Mail.to = aluno.email;
+  Mail.subject = "Atualização de Notas";
+
+  Mail.message = `<p>Prezado, ${aluno.nome}. Suas notas foram atualizadas! Confira a seguir:.</p><p>Requisitos: ${aluno.metas.requisitos}</p><p>Gerencia de Configuração: ${aluno.metas.gerDeConfiguracao}</p><p>Confira a Média da turma a seguir:</p><p>Requisitos: ${medias.requisitos}</p><p>Gerencia de Configuração: ${medias.gerDeConfiguracao}</p>`;
   let result = Mail.sendMail();
   console.log(result)
   res.status(200).json({ 'result': result })
@@ -64,7 +65,7 @@ taserver.post('/sendemail', function(req, res){
 
 
 var server = taserver.listen(port, function () {
-  console.log('Example app listening on port 3030!')
+  console.log('Example app listening on port 3000!')
 })
 
 function closeServer(): void {

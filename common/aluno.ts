@@ -1,8 +1,12 @@
+const dayInMilliseconds:number = 86400000;
+
 export class Aluno {
   nome: string;
   cpf: string;
   email: string;
   metas: Map<string,string>;
+  lastEmail: Date;
+  notificacaoEmail: Boolean;
 
   constructor() {
     this.clean();
@@ -12,6 +16,9 @@ export class Aluno {
     this.nome = "";
     this.cpf = "";
     this.email = "";
+    this.lastEmail = new Date();
+    this.notificacaoEmail = true;
+    this.lastEmail.setTime(this.lastEmail.getTime() - dayInMilliseconds);
     this.metas = new Map<string,string>();
   }
 

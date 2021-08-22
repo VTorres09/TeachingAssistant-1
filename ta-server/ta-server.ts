@@ -52,15 +52,12 @@ taserver.route("/sendemail").get((req, res) => {
 });
 
 taserver.post('/sendemail', function(req, res){
-  let message = req.body;
-  
-  Mail.to = message.email;
+  let {aluno, medias} = req.body;
+  console.log(aluno)
+  Mail.to = aluno.email;
   Mail.subject = "Atualização de Notas";
 
-  Mail.message = "<p>Prezado, " + message.nome + " suas notas foram atualizadas! Confira a seguir.</p><p>Requisitos: " 
-  + JSON.stringify(message.metas.gerDeConfiguracao) + 
-  "</p><p>Gerencia de Configuração: " + JSON.stringify(message.metas.requisitos) + "</p>";
-
+  Mail.message = `<p>Prezado, ${aluno.nome}. Suas notas foram atualizadas! Confira a seguir:.</p><p>Requisitos: ${aluno.metas.requisitos}</p><p>Gerencia de Configuração: ${aluno.metas.gerDeConfiguracao}</p><p>Confira a Média da turma a seguir:</p><p>Requisitos: ${medias.requisitos}</p><p>Gerencia de Configuração: ${medias.gerDeConfiguracao}</p>`;
   let result = Mail.sendMail();
   console.log(result)
   res.status(200).json({ 'result': result })

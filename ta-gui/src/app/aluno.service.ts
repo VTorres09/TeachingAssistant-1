@@ -15,21 +15,21 @@ export class AlunoService {
 
   criar(aluno: Aluno): Observable<Aluno> {
     return this.http.post<any>(this.taURL + "/aluno", aluno, {headers: this.headers})
-             .pipe( 
+             .pipe(
                 retry(2),
                 map( res => {if (res.success) {return aluno;} else {return null;}} )
-              ); 
+              );
   }
 
   atualizar(aluno: Aluno): Observable<Aluno> {
-    return this.http.put<any>(this.taURL + "/aluno",JSON.stringify(aluno), {headers: this.headers})          .pipe( 
+    return this.http.put<any>(this.taURL + "/aluno",JSON.stringify(aluno), {headers: this.headers})          .pipe(
                 retry(2),
                 map( res => {if (res.success) {return aluno;} else {return null;}} )
-              ); 
+              );
   }
 
-  sendEmail(aluno: Aluno): Observable<Aluno> {
-    return this.http.post<any>(this.taURL + "/sendemail", JSON.stringify(aluno), {headers: this.headers})     .pipe(
+  sendEmail({aluno, medias}: {aluno: Aluno, medias: Record<string, string>}): Observable<Aluno> {
+    return this.http.post<any>(this.taURL + "/sendemail", JSON.stringify({aluno, medias}), {headers: this.headers})     .pipe(
       retry(2),
       map(res => {if (res.success) {return aluno;} else {return null;}})
     )

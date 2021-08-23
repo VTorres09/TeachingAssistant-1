@@ -136,7 +136,6 @@ defineSupportCode(function ({ Given, When, Then }) {
         // await $("input[name='reqgrade']").sendKeys(<string> firstGrade);
         // await $("input[name='gergrade']").sendKeys(<string> secondGrade);
         //await element(by.buttonText('Adicionar')).click();
-        await element(by.buttonText('Atualizar notas')).click();
     });
 
     
@@ -165,14 +164,15 @@ defineSupportCode(function ({ Given, When, Then }) {
 
     Then(/^an email notifying the student with CPF "(\d*)" that a grade has been updated is sent$/, async(cpf) => {
         const alunos = JSON.parse(await request.get(base_url + "alunos"));
-        const aluno = alunos.filter(currentAluno => currentAluno.cpf == cpf);
+        const aluno = alunos.find(currentAluno => currentAluno.cpf == cpf);
         var medias = {
             "requisitos": 5,
             "gerDeConfiguracao": 5
         };
         var options:request.RequestPromiseOptions = {method:"POST", body: {aluno, medias}, json: true};
-        request(base_url + "sendemail", options).then(body => expect(body).to.equal(
-           {result: "Email enviado com sucesso!"}
-        ));
+        request(base_url + "sendemail", options).then(body => 
+            expect(JSON.stringify(body)).to.equal(
+                '{"result":"Email enviado com sucesso!"}'));
+        
     });
 })

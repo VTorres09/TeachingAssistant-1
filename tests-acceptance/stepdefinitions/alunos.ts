@@ -83,10 +83,27 @@ defineSupportCode(function ({ Given, When, Then }) {
 
     Then(/^the system now stores "([^\"]*)" with CPF "(\d*)"$/, async (name, cpf) => {
         
-        let resposta = `{"nome":"${name}","cpf":"${cpf}","email":"","lastEmail":"1995-12-16T05:24:00.000Z","notificacaoEmail":true,"metas":{}}`;
+        let resposta = `{"nome":"${name}","cpf":"${cpf}","email":"","lastEmail":"1995-12-16T06:24:00.000Z","notificacaoEmail":true,"metas":{}}`;
         await request.get(base_url + "alunos")
-                     .then(body => {expect(body.includes(resposta)).to.equal(true)});
+                     .then(body => {
+                         return expect(body.includes(resposta)).to.equal(true);
+                        });
                      
+    });
+
+    Then(/^I write "(\d*)" and "(\d*)" on the grades of the student with CPF "(\d*)"$/, async (firstGrade, secondGrade, cpf) => {
+        let alunos = await request.get(base_url + "alunos");
+        alunos = JSON.parse(alunos);
+        let aluno = alunos.filter(currentAluno => currentAluno.cpf == cpf);
+        aluno.metas = {
+            "requisitos": firstGrade,
+            "gerDeConfiguracao": secondGrade
+        };
+        var options:any = {method: "PUT", uri: (base_url + "aluno"), body:aluno, json: true};
+        await request(options).then(body => 
+            expect(JSON.stringify(body)).to.equal(
+                '{"success":"O aluno foi atualizado com sucesso"}'
+            )).catch(err => console.log(err));
     });
 
 })

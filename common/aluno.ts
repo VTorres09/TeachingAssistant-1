@@ -16,7 +16,7 @@ export class Aluno {
     this.nome = "";
     this.cpf = "";
     this.email = "";
-    this.lastEmail = new Date(2000,10,10);
+    this.lastEmail = new Date("1995-12-17T03:24:00");
     this.notificacaoEmail = true;
     this.lastEmail.setTime(this.lastEmail.getTime() - dayInMilliseconds);
     this.metas = new Map<string,string>();

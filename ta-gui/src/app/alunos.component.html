@@ -1,5 +1,4 @@
 <html (mousemove)="onMove()">
-<input type="checkbox" checked data-toggle=" toggle ">Habilitar recebimento de e-mail
 <table>
     <tr>
         <td><label>Nome </label></td>
@@ -28,7 +27,7 @@
     <tr *ngFor="let a of alunos" name="alunolist">
         <td name="nomelist">{{a.nome}}</td>
         <td name="cpflist">{{a.cpf}}</td>
-        <td>{{a.email}}</td>
+        <td name="emailist">{{a.email}}</td>
     </tr>
 </table>
 

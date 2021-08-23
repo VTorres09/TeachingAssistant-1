@@ -30,7 +30,7 @@ export class AlunoService {
 
   sendEmail({aluno, medias}: {aluno: Aluno, medias: Record<string, string>}): Observable<Aluno> {
     return this.http.post<any>(this.taURL + "/sendemail", JSON.stringify({aluno, medias}), {headers: this.headers})     .pipe(
-      retry(2),
+      //retry(2),
       map(res => {if (res.success) {return aluno;} else {return null;}})
     )
   }

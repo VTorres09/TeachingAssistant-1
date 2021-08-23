@@ -42,10 +42,7 @@ const dayInMilliseconds: number = 86400000;
         medias[keys[i]] = (total[keys[i]]/contador[keys[i]]).toString();
       }
       this.alunos.map((aluno) => {
-        var currentDate: Date = new Date();
-        aluno.lastEmail = new Date(aluno.lastEmail);
-        // No máximo 1 dia check
-        if((currentDate.getTime() - aluno.lastEmail.getTime()) > dayInMilliseconds && aluno.notificacaoEmail){
+        if(aluno.notificacaoEmail){
           this.alunoService.sendEmail({aluno, medias }).subscribe();
           aluno.lastEmail = new Date();
           this.alunoService.atualizar(aluno).subscribe(

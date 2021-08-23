@@ -52,15 +52,21 @@ taserver.route("/sendemail").get((req, res) => {
 });
 
 taserver.post('/sendemail', function(req, res){
-  let {aluno, medias} = req.body;
-  console.log(aluno)
-  Mail.to = aluno.email;
-  Mail.subject = "Atualização de Notas";
-
-  Mail.message = `<p>Prezado, ${aluno.nome}. Suas notas foram atualizadas! Confira a seguir:.</p><p>Requisitos: ${aluno.metas.requisitos}</p><p>Gerencia de Configuração: ${aluno.metas.gerDeConfiguracao}</p><p>Confira a Média da turma a seguir:</p><p>Requisitos: ${medias.requisitos}</p><p>Gerencia de Configuração: ${medias.gerDeConfiguracao}</p>`;
-  let result = Mail.sendMail();
-  console.log(result)
-  res.status(200).json({ 'result': result })
+  const {aluno, medias} = req.body;
+  const dateNow = (new Date()).getTime();
+  const lastEmailDate = (new Date(aluno.lastEmail)).getTime();
+  const dayInMilliseconds = 86400000;
+  if((dateNow - lastEmailDate) < dayInMilliseconds){
+    console.log("Esse aluno já recebeu email hoje");
+    res.status(403).json({result: "Esse aluno já recebeu email hoje"});
+  }else{
+    Mail.to = aluno.email;
+    Mail.subject = "Atualização de Notas";
+    Mail.message = `<p>Prezado, ${aluno.nome}. Suas notas foram atualizadas! Confira a seguir:.</p><p>Requisitos: ${aluno.metas.requisitos}</p><p>Gerencia de Configuração: ${aluno.metas.gerDeConfiguracao}</p><p>Confira a Média da turma a seguir:</p><p>Requisitos: ${medias.requisitos}</p><p>Gerencia de Configuração: ${medias.gerDeConfiguracao}</p>`;
+    Mail.sendMail();
+    console.log("Email enviado com sucesso!");
+    res.status(200).json({result:"Email enviado com sucesso!"});
+  }
 });
 
 

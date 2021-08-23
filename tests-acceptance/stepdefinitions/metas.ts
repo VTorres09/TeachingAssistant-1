@@ -65,64 +65,18 @@ async function setElementWithGrades(cpf: string, firstGrade: string, secondGrade
 }
 
 defineSupportCode(function ({ Given, When, Then }) {
-    Given(/^I am at the students page$/, async () => {
+
+    Then(/^I write "(\d*)" and "(\d*)" on the grades of the student with CPF "(\d*)"$/, async (firstGrade, secondGrade, cpf) => {
+        setElementWithGrades(<string> cpf,<string> firstGrade,<string> secondGrade)
+    });
+
+    Then(/^I go to the metas page$/, async () => {
+        await $("a[name='metas']").click();           
+    });
+    
+    Given(/^I am at the metas page$/, async () => {
         await browser.get("http://localhost:4200/");
         await expect(browser.getTitle()).to.eventually.equal('TaGui');
-        await $("a[name='alunos']").click();
-    })
-
-    Given(/^I cannot see a student with CPF "(\d*)" in the students list$/, async (cpf) => {
-        await assertElementsWithSameCPF(0,cpf);
-    });
-
-    When(/^I try to register the student "([^\"]*)" with CPF "(\d*)"$/, async (name, cpf) => {
-        await criarAluno(name,cpf);
-    });
-
-    Then(/^I can see "([^\"]*)" with CPF "(\d*)" in the students list$/, async (name, cpf) => {
-        await assertElementsWithSameCPFAndName(1,cpf,name);
-    });
-
-    Given(/^I can see a student with CPF "(\d*)" in the students list$/, async (cpf) => {
-        await criarAluno("Clarissa",cpf);
-        await assertElementsWithSameCPF(1,cpf); 
-    });
-
-    Given(/^I can see a student with Email "(\d*)" in the students list$/, async (email) => {
-        await assertElementsWithSameEmail(1,email); 
-    });
-
-    Then(/^I cannot see "([^\"]*)" with CPF "(\d*)" in the students list$/, async (name, cpf) => {
-        await assertElementsWithSameCPFAndName(0,cpf,name);
-    });
-
-    Then(/^I can see an error message$/, async () => {
-        var allmsgs : ElementArrayFinder = element.all(by.name('msgcpfexistente'));
-        await assertTamanhoEqual(allmsgs,1);
-    });
-
-    Given(/^the system has no student with CPF "(\d*)"$/, async (cpf) => {
-       await request.get(base_url + "alunos")
-                .then(body => 
-                   expect(body.includes(`"cpf":"${cpf}"`)).to.equal(false));
-    });
-
-    When(/^I register the student "([^\"]*)" with CPF "(\d*)"$/, async (name, cpf) => {
-        const aluno = {"nome": name, "cpf" : cpf, "email":""};
-        var options:request.RequestPromiseOptions = {method: 'POST', body: aluno, json: true};
-        await request(base_url + "aluno", options)
-              .then(body => 
-                   expect(JSON.stringify(body)).to.equal(
-                       '{"success":"O aluno foi cadastrado com sucesso"}'));
-    });
-
-    Then(/^the system now stores "([^\"]*)" with CPF "(\d*)"$/, async (name, cpf) => {
-        
-        let resposta = `{"nome":"${name}","cpf":"${cpf}","email":"","lastEmail":"1995-12-16T06:24:00.000Z","notificacaoEmail":true,"metas":{}}`;
-        await request.get(base_url + "alunos")
-                     .then(body => {
-                         return expect(body.includes(resposta)).to.equal(true);
-                        });
-                     
+        await $("a[name='metas']").click();
     });
 })

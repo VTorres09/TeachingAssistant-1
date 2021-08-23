@@ -192,19 +192,20 @@ defineSupportCode(function ({ Given, When, Then }) {
             "gerDeConfiguracao": 5
         };
         var options:request.RequestPromiseOptions = {method:"POST", body: {aluno, medias}, json: true};
-        request(base_url + "sendemail", options).then(body => 
-            expect(JSON.stringify(body)).to.equal(
-                '{"result":"Esse aluno já recebeu email hoje"}'));
+        request(base_url + "sendemail", options).catch(err => 
+            expect(JSON.stringify(err.error)).to.equal(
+                '{"result":"Esse aluno já recebeu email hoje"}'
+            ));
     });
 
     Then(/^the student with CPF "(\d*)" no longer receive emails from the system in this day$/, async(cpf) => {
         const alunos = JSON.parse(await request.get(base_url + "alunos"));
         const aluno = alunos.find(currentAluno => currentAluno.cpf == cpf);
         aluno.lastEmail = new Date();
-        var options:request.RequestPromiseOptions = {method: "PUT", body: {aluno}, json: true};
-        request(base_url + "/aluno", options).then(body => 
+        var options:request.RequestPromiseOptions = {method: "PUT", body: aluno, json: true};
+        request(base_url + "aluno", options).then(body => 
             expect(JSON.stringify(body)).to.equal(
                 '{"success":"O aluno foi atualizado com sucesso"}'
-            ));
+        ));
     });
 })

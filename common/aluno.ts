@@ -32,6 +32,10 @@ export class Aluno {
     this.nome = from.nome;
     this.cpf = from.cpf;
     this.email = from.email;
+    if(from.lastEmail)
+      this.lastEmail = from.lastEmail;
+    if(from.notificacaoEmail)
+      this.notificacaoEmail = from.notificacaoEmail;
     this.copyMetasFrom(from.metas);
   }
 

@@ -55,5 +55,5 @@ Then I go to the metas page
 And I write "8" and "9" on the grades of the student with CPF "684"
 And I see that the student with CPF "684" has “Notificações de email” variable "enabled"
 And I see that the student with CPF "684" already received an email that day
-# Then an email notifying the student with CPF "684" that a grade has been updated isn't sent     //IMPLEMENTAR
+Then an email notifying the student with CPF "684" that a grade has been updated isn't sent     
 

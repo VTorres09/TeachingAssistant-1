@@ -53,19 +53,16 @@ taserver.route("/sendemail").get((req, res) => {
 
 taserver.post('/sendemail', function(req, res){
   const {aluno, medias} = req.body;
-  console.log('aluno: ', aluno)
   const dateNow = (new Date()).getTime();
   const lastEmailDate = (new Date(aluno.lastEmail)).getTime();
   const dayInMilliseconds = 86400000;
   if((dateNow - lastEmailDate) < dayInMilliseconds){
-    console.log("Esse aluno já recebeu email hoje");
     res.status(403).json({result: "Esse aluno já recebeu email hoje"});
   }else{
     Mail.to = aluno.email;
     Mail.subject = "Atualização de Notas";
     Mail.message = `<p>Prezado, ${aluno.nome}. Suas notas foram atualizadas! Confira a seguir:.</p><p>Requisitos: ${aluno.metas.requisitos || 'NA'}</p><p>Gerencia de Configuração: ${aluno.metas.gerDeConfiguracao || 'NA'}</p><p>Confira a Média da turma a seguir:</p><p>Requisitos: ${medias.requisitos || 'NA'}</p><p>Gerencia de Configuração: ${medias.gerDeConfiguracao || 'NA'}</p>`;
     Mail.sendMail();
-    console.log("Email enviado com sucesso!");
     res.status(200).json({result:"Email enviado com sucesso!"});
   }
 });

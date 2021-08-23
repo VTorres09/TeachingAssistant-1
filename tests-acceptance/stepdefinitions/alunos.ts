@@ -162,6 +162,15 @@ defineSupportCode(function ({ Given, When, Then }) {
         expect(dateNow - lastEmailDate > dayInMilliseconds);
     });
 
+    Then('I see that the student with CPF {stringInDoubleQuotes} already received an email that day', async(cpf) => {
+        const alunos = JSON.parse(await request.get(base_url + "alunos"));
+        const aluno = alunos.find(currentAluno => currentAluno.cpf == cpf);
+        const dayInMilliseconds = 86400000;
+        const dateNow = (new Date()).getTime();
+        const lastEmailDate = (new Date(aluno.lastEmail)).getTime();
+        expect((dateNow - lastEmailDate) <= dayInMilliseconds);
+    });
+
     Then(/^an email notifying the student with CPF "(\d*)" that a grade has been updated is sent$/, async(cpf) => {
         const alunos = JSON.parse(await request.get(base_url + "alunos"));
         const aluno = alunos.find(currentAluno => currentAluno.cpf == cpf);
@@ -172,7 +181,30 @@ defineSupportCode(function ({ Given, When, Then }) {
         var options:request.RequestPromiseOptions = {method:"POST", body: {aluno, medias}, json: true};
         request(base_url + "sendemail", options).then(body => 
             expect(JSON.stringify(body)).to.equal(
-                '{"result":"Email enviado com sucesso!"}'));
-        
+                '{"result":"Email enviado com sucesso!"}'));        
+    });
+
+    Then(/^an email notifying the student with CPF "(\d*)" that a grade has been updated isn't sent$/, async(cpf) => {
+        const alunos = JSON.parse(await request.get(base_url + "alunos"));
+        const aluno = alunos.find(currentAluno => currentAluno.cpf == cpf);
+        var medias = {
+            "requisitos": 5,
+            "gerDeConfiguracao": 5
+        };
+        var options:request.RequestPromiseOptions = {method:"POST", body: {aluno, medias}, json: true};
+        request(base_url + "sendemail", options).then(body => 
+            expect(JSON.stringify(body)).to.equal(
+                '{"result":"Esse aluno já recebeu email hoje"}'));
+    });
+
+    Then(/^the student with CPF "(\d*)" no longer receive emails from the system in this day$/, async(cpf) => {
+        const alunos = JSON.parse(await request.get(base_url + "alunos"));
+        const aluno = alunos.find(currentAluno => currentAluno.cpf == cpf);
+        aluno.lastEmail = new Date();
+        var options:request.RequestPromiseOptions = {method: "PUT", body: {aluno}, json: true};
+        request(base_url + "/aluno", options).then(body => 
+            expect(JSON.stringify(body)).to.equal(
+                '{"success":"O aluno foi atualizado com sucesso"}'
+            ));
     });
 })

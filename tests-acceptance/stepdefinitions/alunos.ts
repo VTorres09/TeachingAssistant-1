@@ -39,30 +39,6 @@ async function assertElementsWithSameEmail(n,email) {
     await assertTamanhoEqual(sameemails,n); 
 }
 
-async function assertElementWithEmailNotifications(cpf, expected) {
-    const alunoCpf = await element(by.cssContainingText('td', cpf)).getWebElement();
-    const aluno = await alunoCpf.getDriver();
-    const checkbox = await aluno.findElement(by.name("notificacaoEmail"));
-    const value = await checkbox.isSelected();
-    return value === expected;
-}
-
-async function setElementWithEmailNotifications(cpf: string, enabled: boolean) {
-    const alunoCpf = await element(by.cssContainingText('td', cpf)).getWebElement();
-    const aluno = await alunoCpf.getDriver();
-    const checkbox = await aluno.findElement(by.name("notificacaoEmail"));
-    const value = await checkbox.isSelected()
-    if(enabled !== value) await checkbox.click();
-}
-
-async function setElementWithGrades(cpf: string, firstGrade: string, secondGrade: string) {
-    const alunoCpf = await element(by.cssContainingText('td', cpf)).getWebElement();
-    const aluno = await alunoCpf.getDriver();
-    const first = await aluno.findElement(by.name("reqgrade"));
-    await first.sendKeys(firstGrade);
-    const second = await aluno.findElement(by.name("gergrade"));
-    await second.sendKeys(secondGrade);
-}
 
 defineSupportCode(function ({ Given, When, Then }) {
     Given(/^I am at the students page$/, async () => {

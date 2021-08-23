@@ -26,15 +26,27 @@ Then the system now stores "Paulo" with CPF "685"
 # //////////////////////////////////////////////////////////////////////////////////////////////////////////////
 # ///////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-Scenario: Enviar email com notas (Caso ele não tenha recebido nenhum)
-Given I am at the students page                                                                      
-Given I can see a student with CPF "684" in the students list                                        
-Then I go to the metas page                                                                                                                                           
-Then I write "8" and "9" on the grades of the student with CPF "684"                                 
+# Scenario: Enviar email com notas (Caso ele não tenha recebido nenhum)
+# Given I am at the students page                                                                      
+# Given I can see a student with CPF "684" in the students list                                        
+# Then I go to the metas page        
+# Then I write "8" and "9" on the grades of the student with CPF "684"                                 
 # And I see that the student with CPF "684" has “Notificações de email” variable enabled               
-And I see that the student with CPF "684" didn’t receive an email that day                      
-Then an email notifying the student with CPF "684" that a grade has been updated is sent                       
-And the student with CPF "684" no longer receive emails from the system in this day             
+# And I see that the student with CPF "684" didn’t receive an email that day                      
+# Then an email notifying the student with CPF "684" that a grade has been updated is sent                       
+# And the student with CPF "684" no longer receive emails from the system in this day     
+
+Scenario: Desativar as notificações de email
+Given I am at the metas page                                                     
+When I "disable" the “Notificações de email” from the student with CPF "684"
+Then I see that the student with CPF "684" has “Notificações de email” variable "disabled"
+
+
+Scenario: Ativar as notificações de email
+Given I am at the metas page                                        
+When I "enable" the “Notificações de email” from the student with CPF "684"
+Then I see that the student with CPF "684" has “Notificações de email” variable "disabled"
+        
 
 
 # Scenario: Enviar email com notas (Caso ele tenha recebido)
@@ -46,14 +58,3 @@ And the student with CPF "684" no longer receive emails from the system in this 
 # And I see that the student with CPF "684" already received an email that day                    //IMPLEMENTAR
 # Then an email notifying the student with CPF "684" that a grade has been updated isn't sent     //IMPLEMENTAR
 
-
-# Scenario: Desativar as notificações de email
-# Given I am the metas page                                                     
-# Then I "disable" the “Notificações de email” from the student with CPF "684"                 
-# And I see that the student with CPF "684" has “Notificações de email” variable "disabled"            
-
-
-# Scenario: Ativar as notificações de email
-# Given I am the metas page                                        
-# Then I "enable" the “Notificações de email” from the student with CPF "684"                    
-# And I see that the student with CPF "684" has “Notificações de email” variable "disabled"     

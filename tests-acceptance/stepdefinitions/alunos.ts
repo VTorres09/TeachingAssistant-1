@@ -41,16 +41,15 @@ async function assertElementsWithSameEmail(n,email) {
 
 async function assertElementWithEmailNotifications(cpf, expected) {
     const alunoCpf = await element(by.cssContainingText('td', cpf)).getWebElement();
-    const aluno = await alunoCpf.getDriver().findElement(by.tagName('tr'));
-    //const checkbox = await aluno.findElement(by.name("notificacaoEmail"));
-    const checkbox = await aluno.findElement(by.className('notificacao')).findElement(by.name("notificacaoEmail"));
+    const aluno = await alunoCpf.getDriver();
+    const checkbox = await aluno.findElement(by.name("notificacaoEmail"));
     const value = await checkbox.isSelected();
     return value === expected;
 }
 
 async function setElementWithEmailNotifications(cpf: string, enabled: boolean) {
     const alunoCpf = await element(by.cssContainingText('td', cpf)).getWebElement();
-    const aluno = await alunoCpf.getDriver().findElement(by.tagName('tr'));
+    const aluno = await alunoCpf.getDriver();
     const checkbox = await aluno.findElement(by.name("notificacaoEmail"));
     const value = await checkbox.isSelected()
     if(enabled !== value) await checkbox.click();
@@ -58,7 +57,7 @@ async function setElementWithEmailNotifications(cpf: string, enabled: boolean) {
 
 async function setElementWithGrades(cpf: string, firstGrade: string, secondGrade: string) {
     const alunoCpf = await element(by.cssContainingText('td', cpf)).getWebElement();
-    const aluno = await alunoCpf.getDriver().findElement(by.tagName('tr'));
+    const aluno = await alunoCpf.getDriver();
     const first = await aluno.findElement(by.name("reqgrade"));
     await first.sendKeys(firstGrade);
     const second = await aluno.findElement(by.name("gergrade"));
@@ -76,13 +75,10 @@ defineSupportCode(function ({ Given, When, Then }) {
         await assertElementsWithSameCPF(0,cpf);
     });
 
-    Then(/^I see that the student with CPF "(\d*)" has “Notificações de email” variable "(\d*)"$/, async (cpf, expect) => {
+    Then('I see that the student with CPF {stringInDoubleQuotes} has “Notificações de email” variable {stringInDoubleQuotes}', async (cpf, expect) => {
         await assertElementWithEmailNotifications(cpf, expect === 'enabled');
     });
 
-    Then(/^I see that the student with CPF "(\d*)" has “Notificações de email” variable enabled$/, async (cpf) => {
-        await assertElementWithEmailNotifications(cpf, true);
-    });
 
     When(/^I try to register the student "([^\"]*)" with CPF "(\d*)"$/, async (name, cpf) => {
         await criarAluno(name,cpf);
@@ -117,9 +113,9 @@ defineSupportCode(function ({ Given, When, Then }) {
     });
 
     When(/^I register the student "([^\"]*)" with CPF "(\d*)"$/, async (name, cpf) => {
-        let aluno = {"nome": name, "cpf" : cpf, "email":""};
-        var options:any = {method: 'POST', uri: (base_url + "aluno"), body:aluno, json: true};
-        await request(options)
+        const aluno = {"nome": name, "cpf" : cpf, "email":""};
+        var options:request.RequestPromiseOptions = {method: 'POST', body: aluno, json: true};
+        await request(base_url + "aluno", options)
               .then(body => 
                    expect(JSON.stringify(body)).to.equal(
                        '{"success":"O aluno foi cadastrado com sucesso"}'));
@@ -136,16 +132,16 @@ defineSupportCode(function ({ Given, When, Then }) {
     });
 
     Then(/^I write "(\d*)" and "(\d*)" on the grades of the student with CPF "(\d*)"$/, async (firstGrade, secondGrade, cpf) => {
-        //setElementWithGrades(<string> cpf,<string> firstGrade,<string> secondGrade)
-        await $("input[name='reqgrade']").sendKeys(<string> firstGrade);
-        await $("input[name='gergrade']").sendKeys(<string> secondGrade);
+        setElementWithGrades(<string> cpf,<string> firstGrade,<string> secondGrade)
+        // await $("input[name='reqgrade']").sendKeys(<string> firstGrade);
+        // await $("input[name='gergrade']").sendKeys(<string> secondGrade);
         //await element(by.buttonText('Adicionar')).click();
         await element(by.buttonText('Atualizar notas')).click();
     });
 
     
-    Then(/^I "(\d*)" the “Notificações de email” from the student with CPF "(\d*)"$/, async (enable, cpf) => {
-        setElementWithEmailNotifications(<string> cpf, (<string> enable) === 'enable');
+    When('I {stringInDoubleQuotes} the “Notificações de email” from the student with CPF {stringInDoubleQuotes}', async (enable, cpf) => {
+        await setElementWithEmailNotifications(<string> cpf, (<string> enable) === 'enable');
     });
 
     Then(/^I go to the metas page$/, async () => {
@@ -159,8 +155,8 @@ defineSupportCode(function ({ Given, When, Then }) {
     });
 
     Then(/^I see that the student with CPF "(\d*)" didn’t receive an email that day$/, async(cpf) => {
-        let alunos = JSON.parse(await request.get(base_url + "alunos"));
-        let aluno = alunos.filter(currentAluno => currentAluno.cpf == cpf);
+        const alunos = JSON.parse(await request.get(base_url + "alunos"));
+        const aluno = alunos.find(currentAluno => currentAluno.cpf == cpf);
         const dayInMilliseconds = 86400000;
         const dateNow = (new Date()).getTime();
         const lastEmailDate = (new Date(aluno.lastEmail)).getTime();
@@ -168,15 +164,15 @@ defineSupportCode(function ({ Given, When, Then }) {
     });
 
     Then(/^an email notifying the student with CPF "(\d*)" that a grade has been updated is sent$/, async(cpf) => {
-        let alunos = JSON.parse(await request.get(base_url + "alunos"));
-        let aluno = alunos.filter(currentAluno => currentAluno.cpf == cpf);
+        const alunos = JSON.parse(await request.get(base_url + "alunos"));
+        const aluno = alunos.filter(currentAluno => currentAluno.cpf == cpf);
         var medias = {
             "requisitos": 5,
             "gerDeConfiguracao": 5
         };
-        var options:any = {method:"POST", uri: (base_url + "sendemail"), body:{aluno, medias}};
-        request(options).then(body => expect(JSON.stringify(body)).to.equal(
-           '"result": "Email enviado com sucesso!"'
+        var options:request.RequestPromiseOptions = {method:"POST", body: {aluno, medias}, json: true};
+        request(base_url + "sendemail", options).then(body => expect(body).to.equal(
+           {result: "Email enviado com sucesso!"}
         ));
     });
 })
